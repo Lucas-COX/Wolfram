@@ -1,4 +1,4 @@
-module GetOpts where
+module WConfig where
 
 import Text.Read (readMaybe)
 
@@ -38,4 +38,5 @@ getOpts c ("--window":value:rest) = case readMaybe value :: Maybe Int of
 getOpts c ("--move":value:rest) = case readMaybe value :: Maybe Int of
         Just x -> getOpts (c {window = Just x}) rest
         Nothing -> Nothing
-getOpts c _ = Just c
+getOpts c [] = Just c
+getOpts _ (a:_) = Nothing

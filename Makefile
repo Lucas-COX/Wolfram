@@ -9,6 +9,11 @@ NAME	=	wolfram
 
 BINARY_PATH     :=  $(shell stack path --local-install-root)
 
+SOURCES	=	src/Cell.hs \
+			src/Universe.hs \
+			src/WConfig.hs \
+			src/Wolfram.hs
+
 all: build
 
 build:
@@ -17,6 +22,9 @@ build:
 
 clean:
 	@rm -f *\~
+
+debug:
+	@ghci $(SOURCES)
 
 fclean: clean
 	@rm -f $(NAME)
