@@ -1,26 +1,46 @@
 module Wolfram where
 
-import WConfig ( Config(rule, lineNb, window) )
+import WConfig ( Config(rule, lineNb, window, start) )
 import Cell ( CellState(..) )
-import Universe ( uToString, U(..), lshift, rshift, llist, rlist, getNeighborhood, uToList )
-import Utils ( maybeSub )
+import Universe (
+    uToString,
+    U(..),
+    lshift,
+    rshift,
+    llist,
+    rlist,
+    getNeighborhood,
+    uToList,
+    getNCells
+  )
+import Utils ( maybeSub, reverseList )
 
 import qualified Data.Maybe
 import Control.Applicative (liftA2)
 import Data.Word (Word8)
 
-createUniverse :: Maybe Int -> U CellState
-createUniverse (Just n) = if even n
-    then U (replicate (n `div` 2) Dead) Alive (replicate (n `div` 2 - 1) Dead)
-    else U (replicate (n `div` 2) Dead) Alive (replicate (n `div` 2) Dead)
-createUniverse Nothing = U (replicate 40 Dead) Alive (replicate 39 Dead)
+
+createUniverse :: U CellState
+createUniverse = U (repeat Dead) Alive (repeat Dead)
+
 
 --todo format function to handle width and shift (use rotate on normal list)
 
---todo function that returns function that computes for all rules
+--todo handle move (rotate x times before displaying)
+
+addToByte :: Word8 -> Int -> [Bool]
+addToByte b n
+  | n < 0 = []
+  | b >= 2^n = True:addToByte (b - 2^n) (n - 1)
+  | b < 2^n = False:addToByte b (n - 1)
+  | otherwise = []
+
+createByte :: Word8 -> [Bool]
+createByte n = addToByte n 7
 
 getNBit :: Word8 -> Word8 -> Bool
-getNBit w n = (w `div` 2^n) /= 0
+getNBit w n = reverseList (createByte w)!!(fromIntegral n :: Int)
+
 
 computeRule :: Word8 -> [CellState] -> CellState
 computeRule n [Alive, Alive, Alive] = if getNBit n 7 then Alive else Dead
@@ -35,14 +55,16 @@ computeRule _ _ = Dead
 
 
 computeLeftList :: Word8 -> CellState -> [CellState] -> [CellState]
-computeLeftList ru x (l:h:ls) = computeRule ru [h, l, x]:computeLeftList ru l (h:ls)
+computeLeftList ru x (l:h:ls) =
+  computeRule ru [h, l, x]:computeLeftList ru l (h:ls)
 computeLeftList _ _ ls = ls
 
+
 computeRightList :: Word8 -> CellState -> [CellState] -> [CellState]
-computeRightList ru x (l:h:ls) = computeRule ru [x, l, h]:computeRightList ru l (h:ls)
+computeRightList ru x (l:h:ls) =
+  computeRule ru [x, l, h]:computeRightList ru l (h:ls)
 computeRightList _ _ ls = ls
 
--- todo to apply rule on left list we need to reverse it :c
 
 computeNext :: Config -> U CellState -> U CellState
 computeNext _ (U [] x rs ) = U [] x rs
@@ -52,13 +74,24 @@ computeNext c (U ls x rs) = U
     (computeRule (Data.Maybe.fromJust (rule c)) (getNeighborhood (U ls x rs)))
     (computeRightList (Data.Maybe.fromJust (rule c)) x rs)
 
+
 printLoop :: Config -> U CellState -> IO ()
 printLoop c u
-  | Data.Maybe.isNothing (lineNb c) = putStrLn (uToString u)
-      >> printLoop c (computeNext c u)
-  | lineNb c > Just 0 = putStrLn (uToString u)
-      >> printLoop (c {lineNb = maybeSub (lineNb c) (Just 1)}) (computeNext c u)
-  | otherwise = putStrLn (uToString u)
+  | lineNb c < 0 =
+    putStrLn (uToString $ getNCells  (window c) u)
+    >> printLoop c (computeNext c u)
+  | lineNb c > 0 =
+    putStrLn (uToString $ getNCells (window c) u)
+    >> printLoop (c {lineNb = lineNb c - 1}) (computeNext c u)
+  | otherwise =
+    putStrLn (uToString $ getNCells (window c) u)
+
+
+startLoop :: Config -> U CellState -> U CellState
+startLoop c u
+  | start c > 0 = startLoop c {start = start c -  1} (computeNext c u)
+  | otherwise = u
+
 
 wolfram :: Config -> IO ()
-wolfram c = printLoop c $ createUniverse (window c)
+wolfram c = printLoop c $ startLoop c createUniverse

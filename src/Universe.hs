@@ -40,3 +40,10 @@ uToList (U ls x rs) = ls ++ [x] ++ rs
 getNeighborhood :: U x -> [x]
 getNeighborhood (U (l:ls) x (r:rs)) = [l, x, r]
 getNeighborhood U {} = []
+
+getNCells :: Int -> U x -> U x
+getNCells n (U ls x rs)
+    | n <= 0 = U ls x rs
+    | even n = U (take (n `div` 2) ls) x (take (n `div` 2 - 1) rs)
+    | odd n = U (take (n `div` 2) ls) x (take (n `div` 2) rs)
+getNCells _ (U _ x _) = U [] x []
