@@ -1,12 +1,13 @@
 module WConfig where
 
 import Text.Read (readMaybe)
+import Data.Word (Word8)
 
 data Config =
     Config {
-    rule :: Int
+    rule :: Maybe Word8
     , start :: Maybe Int
-    , line_nb :: Maybe Int
+    , lineNb :: Maybe Int
     , window :: Maybe Int
     , move :: Maybe Int
     } deriving Show
@@ -14,23 +15,23 @@ data Config =
 
 defaultConf :: Config
 defaultConf = Config {
-    rule = -1
+    rule = Nothing
     , start = Nothing
-    , line_nb = Nothing
+    , lineNb = Nothing
     , window = Nothing
     , move = Nothing
     }
 
 
 getOpts :: Config -> [String] -> Maybe Config
-getOpts c ("--rule":value:rest) = case (readMaybe value :: Maybe Int) of
-        Just x -> getOpts (c {rule = x}) rest
+getOpts c ("--rule":value:rest) = case (readMaybe value :: Maybe Word8) of
+        Just x -> getOpts (c {rule = Just x}) rest
         Nothing -> Nothing
 getOpts c ("--start":value:rest) = case readMaybe value :: Maybe Int of
         Just x -> getOpts (c {start = Just x}) rest
         Nothing -> Nothing
 getOpts c ("--lines":value:rest) = case readMaybe value :: Maybe Int of
-        Just x -> getOpts (c {line_nb = Just x}) rest
+        Just x -> getOpts (c {lineNb = Just x}) rest
         Nothing -> Nothing
 getOpts c ("--window":value:rest) = case readMaybe value :: Maybe Int of
         Just x -> getOpts (c {window = Just x}) rest
