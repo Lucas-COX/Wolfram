@@ -2,7 +2,8 @@ module Universe (
     U (..),
     uToString,
     getNeighborhood,
-    getNCells
+    getNCells,
+    shift
 ) where
 
 import Utils ( reverseList )
@@ -30,6 +31,7 @@ rshift (U (l:ls) x rs) = U ls l (x:rs)
 rshift u = u
 
 shift :: U x -> Int -> U x
+shift u 0 = u
 shift u n = if n < 0
     then shift (lshift u) (n + 1)
     else shift (rshift u) (n - 1)

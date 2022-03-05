@@ -1,14 +1,15 @@
 module Wolfram (
-  wolfram
+  wolfram,
 ) where
 
-import WConfig ( Config(rule, lineNb, window, start) )
+import WConfig ( Config(rule, lineNb, window, start, move) )
 import Cell ( CellState(..) )
 import Universe (
     uToString,
     U(..),
     getNeighborhood,
-    getNCells
+    getNCells,
+    shift
   )
 import Utils ( reverseList )
 
@@ -20,12 +21,6 @@ createUniverse :: U CellState
 createUniverse = U (repeat Dead) Alive (repeat Dead)
 
 
---todo format function to handle width and shift (use rotate on normal list)
-
---todo handle move (rotate x times before displaying)
-
---todo display error on bad argument (add error handling)
-
 addToByte :: Word8 -> Int -> [Bool]
 addToByte b n
   | n < 0 = []
@@ -33,8 +28,10 @@ addToByte b n
   | b < 2^n = False:addToByte b (n - 1)
   | otherwise = []
 
+
 createByte :: Word8 -> [Bool]
 createByte n = addToByte n 7
+
 
 getNBit :: Word8 -> Word8 -> Bool
 getNBit w n = reverseList (createByte w)!!(fromIntegral n :: Int)
@@ -93,5 +90,12 @@ startLoop c u
   | otherwise = u
 
 
+applyMove :: Config -> U CellState -> U CellState
+applyMove c u =
+  if Data.Maybe.fromJust (move c) == 0
+    then u
+    else shift u (Data.Maybe.fromJust (move c))
+
+
 wolfram :: Config -> IO ()
-wolfram c = printLoop c $ startLoop c createUniverse
+wolfram c = printLoop c $ startLoop c $ applyMove c createUniverse
