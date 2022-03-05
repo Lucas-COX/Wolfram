@@ -28,7 +28,7 @@ createUniverse = U (repeat Dead) Alive (repeat Dead)
 
 --todo handle move (rotate x times before displaying)
 
---todo display error on bad argument
+--todo display error on bad argument (add error handling)
 
 addToByte :: Word8 -> Int -> [Bool]
 addToByte b n
@@ -79,19 +79,21 @@ computeNext c (U ls x rs) = U
 
 printLoop :: Config -> U CellState -> IO ()
 printLoop c u
-  | lineNb c < 0 =
-    putStrLn (uToString $ getNCells  (window c) u)
-    >> printLoop c (computeNext c u)
-  | lineNb c > 0 =
-    putStrLn (uToString $ getNCells (window c) u)
-    >> printLoop (c {lineNb = lineNb c - 1}) (computeNext c u)
-  | otherwise =
-    putStrLn (uToString $ getNCells (window c) u)
+  | Data.Maybe.fromJust (lineNb c) > 1 =
+    putStrLn (uToString $ getNCells (Data.Maybe.fromJust (window c)) u)
+    >> printLoop (c {
+      lineNb = Just (Data.Maybe.fromJust (lineNb c) - 1)
+    }) (computeNext c u)
+  | Data.Maybe.fromJust (lineNb c) == 1
+    = putStrLn (uToString $ getNCells (Data.Maybe.fromJust (window c)) u)
+  | otherwise = putStr ""
 
 
 startLoop :: Config -> U CellState -> U CellState
 startLoop c u
-  | start c > 0 = startLoop c {start = start c -  1} (computeNext c u)
+  | Data.Maybe.fromJust (start c) > 0 = startLoop c {
+      start = Just (Data.Maybe.fromJust (start c) - 1)
+    } (computeNext c u)
   | otherwise = u
 
 
