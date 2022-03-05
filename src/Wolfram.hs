@@ -5,17 +5,12 @@ import Cell ( CellState(..) )
 import Universe (
     uToString,
     U(..),
-    lshift,
-    rshift,
-    llist,
-    rlist,
     getNeighborhood,
-    uToList,
     getNCells
   )
-import Utils ( maybeSub, reverseList )
+import Utils ( reverseList )
 
-import qualified Data.Maybe
+import Data.Maybe ( fromJust )
 import Control.Applicative (liftA2)
 import Data.Word (Word8)
 

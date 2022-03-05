@@ -1,0 +1,8 @@
+Usage:
+    ./wolfram [OPTIONS]
+Options:
+    --rule: rule to be applied (MANDATORY)
+    --start: generation number at which to start the display (default 0)
+    --lines: number of lines to display (default infinite)
+    --window: number of cells to display on a single line (default 80)
+    --move: translation to apply to the window (default 0)
