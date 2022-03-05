@@ -23,9 +23,15 @@ defaultConf = Config {
     }
 
 
+parseRule :: Config -> [String] -> Int -> Maybe Config
+parseRule c rest x
+  | x <= 255 && x >= 0
+    = getOpts (c {rule = Just (fromIntegral x :: Word8)}) rest
+  | otherwise = Nothing
+
 getOpts :: Config -> [String] -> Maybe Config
-getOpts c ("--rule":value:rest) = case (readMaybe value :: Maybe Word8) of
-        Just x -> getOpts (c {rule = Just x}) rest
+getOpts c ("--rule":value:rest) = case (readMaybe value :: Maybe Int) of
+        Just x -> parseRule c rest x
         Nothing -> Nothing
 getOpts c ("--start":value:rest) = case readMaybe value :: Maybe Int of
         Just x -> getOpts (c {start = x}) rest

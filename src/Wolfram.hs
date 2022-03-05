@@ -28,6 +28,8 @@ createUniverse = U (repeat Dead) Alive (repeat Dead)
 
 --todo handle move (rotate x times before displaying)
 
+--todo display error on bad argument
+
 addToByte :: Word8 -> Int -> [Bool]
 addToByte b n
   | n < 0 = []
