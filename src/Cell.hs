@@ -1,4 +1,6 @@
-module Cell where
+module Cell (
+    CellState (..)
+) where
 
 data CellState = Alive | Dead deriving Eq
 

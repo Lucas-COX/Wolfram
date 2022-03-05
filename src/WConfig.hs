@@ -2,7 +2,7 @@ module WConfig where
 
 import Text.Read (readMaybe)
 import Data.Maybe ( isNothing )
-import Data.Word (Word8)
+import Data.Word ( Word8 )
 
 data Config =
     Config {

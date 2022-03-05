@@ -1,6 +1,11 @@
-module Universe where
+module Universe (
+    U (..),
+    uToString,
+    getNeighborhood,
+    getNCells
+) where
 
-import Utils (reverseList)
+import Utils ( reverseList )
 
 data U x = U [x] x [x] deriving Show
 
@@ -13,7 +18,8 @@ concatStrings [] = ""
 
 uToString :: Show x => U x -> String
 uToString (U ls x rs) =
-    concatStrings (map show $ reverseList ls) ++ show x ++ concatStrings (map show rs)
+    concatStrings (map show $ reverseList ls)
+    ++ show x ++ concatStrings (map show rs)
 
 lshift :: U x -> U x
 lshift (U ls x (r: rs)) = U (x:ls) r rs

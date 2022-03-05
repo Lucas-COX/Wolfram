@@ -1,8 +1,11 @@
-module Utils where
+module Utils (
+    exitError,
+    reverseList
+) where
 
-import WConfig
-import Data.Maybe (isNothing)
-import System.Exit (exitWith, ExitCode (ExitFailure))
+import WConfig ( Config(rule, start, lineNb, window, move) )
+import Data.Maybe ( isNothing )
+import System.Exit ( exitWith, ExitCode (ExitFailure) )
 
 displayUsage :: IO ()
 displayUsage = readFile ".usage" >>= putStrLn

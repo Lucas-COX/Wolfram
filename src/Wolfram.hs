@@ -1,4 +1,6 @@
-module Wolfram where
+module Wolfram (
+  wolfram
+) where
 
 import WConfig ( Config(rule, lineNb, window, start) )
 import Cell ( CellState(..) )
@@ -11,8 +13,7 @@ import Universe (
 import Utils ( reverseList )
 
 import Data.Maybe ( fromJust )
-import Control.Applicative (liftA2)
-import Data.Word (Word8)
+import Data.Word ( Word8 )
 
 
 createUniverse :: U CellState

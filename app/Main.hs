@@ -6,11 +6,12 @@ import WConfig (
     Config (rule, start, lineNb, window, move),
     checkConfig
   )
-import Wolfram (wolfram)
+import Utils ( exitError )
+import Wolfram ( wolfram )
 
 import Data.Maybe ( isNothing )
-import System.Environment (getArgs)
-import System.Exit (exitWith, ExitCode (ExitFailure))
+import System.Environment ( getArgs )
+import System.Exit ( exitWith, ExitCode (ExitFailure) )
 
 main :: IO ()
 main = getArgs >>= (\args -> if checkConfig $ getOpts defaultConf args
