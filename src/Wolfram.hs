@@ -72,13 +72,11 @@ computeNext c (U ls x rs) = U
 
 printLoop :: Config -> U CellState -> IO ()
 printLoop c u
-  | Data.Maybe.fromJust (lineNb c) == -1 =
-    putStrLn (uToString $ getNCells (Data.Maybe.fromJust (window c)) u)
-    >> printLoop c (computeNext c u)
+  | Data.Maybe.fromJust (lineNb c) == -1 = putStrLn (uToString $ getNCells
+    (Data.Maybe.fromJust (window c)) u) >> printLoop c (computeNext c u)
   | Data.Maybe.fromJust (lineNb c) > 1 =
     putStrLn (uToString $ getNCells (Data.Maybe.fromJust (window c)) u)
-    >> printLoop (c {
-      lineNb = Just (Data.Maybe.fromJust (lineNb c) - 1)
+    >> printLoop (c {lineNb = Just (Data.Maybe.fromJust (lineNb c) - 1)
     }) (computeNext c u)
   | Data.Maybe.fromJust (lineNb c) == 1
     = putStrLn (uToString $ getNCells (Data.Maybe.fromJust (window c)) u)

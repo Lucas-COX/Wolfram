@@ -14,24 +14,18 @@ concatStrings (a : as) = foldl (++) a as
 concatStrings [] = ""
 
 
-displayUsage :: IO ()
-displayUsage = readFile ".usage" >>= putStrLn
+exitUsage :: IO ()
+exitUsage = readFile ".usage" >>= putStrLn >> exitWith (ExitFailure 84)
 
 
 exitError :: Config -> IO ()
 exitError c
-  | isNothing (rule c) = putStrLn "wolfram: Invalid rule"
-    >> displayUsage >> exitWith (ExitFailure 84)
-  | isNothing (start c) = putStrLn "wolfram: Invalid start"
-    >> displayUsage >> exitWith (ExitFailure 84)
-  | isNothing (lineNb c) = putStrLn "wolfram: Invalid lines"
-    >> displayUsage >> exitWith (ExitFailure 84)
-  | isNothing (window c) = putStrLn "wolfram: Invalid window"
-    >> displayUsage >> exitWith (ExitFailure 84)
-  | isNothing (move c) = putStrLn "wolfram: Invalid move"
-    >> displayUsage >> exitWith (ExitFailure 84)
-exitError c = putStrLn "wolfram: Bad arguments"
-    >> displayUsage >> exitWith (ExitFailure 84)
+  | isNothing (rule c) = putStrLn "wolfram: Invalid rule" >> exitUsage
+  | isNothing (start c) = putStrLn "wolfram: Invalid start" >> exitUsage
+  | isNothing (lineNb c) = putStrLn "wolfram: Invalid lines" >> exitUsage
+  | isNothing (window c) = putStrLn "wolfram: Invalid window" >> exitUsage
+  | isNothing (move c) = putStrLn "wolfram: Invalid move" >> exitUsage
+  | otherwise = putStrLn "wolfram: Bad arguments" >> exitUsage
 
 
 reverseList :: [x] -> [x]
