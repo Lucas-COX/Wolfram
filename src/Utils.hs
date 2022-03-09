@@ -1,4 +1,5 @@
 module Utils (
+    concatStrings,
     exitError,
     reverseList
 ) where
@@ -6,6 +7,11 @@ module Utils (
 import WConfig ( Config(rule, start, lineNb, window, move) )
 import Data.Maybe ( isNothing )
 import System.Exit ( exitWith, ExitCode (ExitFailure))
+
+
+concatStrings :: [String] -> String
+concatStrings (a : as) = foldl (++) a as
+concatStrings [] = ""
 
 
 displayUsage :: IO ()

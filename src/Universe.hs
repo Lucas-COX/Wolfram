@@ -6,16 +6,12 @@ module Universe (
     shift
 ) where
 
-import Utils ( reverseList )
+import Utils ( reverseList, concatStrings )
 
 data U x = U [x] x [x] deriving Show
 
 instance Functor U where
     fmap f (U ls x rs) = U (map f ls) (f x) (map f rs)
-
-concatStrings :: [String] -> String
-concatStrings (a:as) = foldl (++) a as
-concatStrings [] = ""
 
 uToString :: Show x => U x -> String
 uToString (U ls x rs) =
