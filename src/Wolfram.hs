@@ -23,30 +23,30 @@ createUniverse = U (repeat Dead) Alive (repeat Dead)
 
 printLoop :: Config -> U CellState -> IO ()
 printLoop c u
-  | Data.Maybe.fromJust (lineNb c) == -1 = putStrLn (uToString $ getNCells
-    (Data.Maybe.fromJust (window c)) u) >> printLoop c (computeNext c u)
-  | Data.Maybe.fromJust (lineNb c) > 1 =
-    putStrLn (uToString $ getNCells (Data.Maybe.fromJust (window c)) u)
-    >> printLoop (c {lineNb = Just (Data.Maybe.fromJust (lineNb c) - 1)
-    }) (computeNext c u)
-  | Data.Maybe.fromJust (lineNb c) == 1
-    = putStrLn (uToString $ getNCells (Data.Maybe.fromJust (window c)) u)
+  | fromJust (lineNb c) == -1 = putStrLn (uToString $ getNCells
+    (fromJust (window c)) u) >> printLoop c (computeNext c u)
+  | fromJust (lineNb c) > 1 =
+    putStrLn (uToString $ getNCells (fromJust (window c)) u)
+    >> printLoop (c {lineNb = Just (fromJust (lineNb c) - 1)})
+    (computeNext c u)
+  | fromJust (lineNb c) == 1
+    = putStrLn (uToString $ getNCells (fromJust (window c)) u)
   | otherwise = putStr ""
 
 
 startLoop :: Config -> U CellState -> U CellState
 startLoop c u
-  | Data.Maybe.fromJust (start c) > 0 = startLoop c {
-      start = Just (Data.Maybe.fromJust (start c) - 1)
+  | fromJust (start c) > 0 = startLoop c {
+      start = Just (fromJust (start c) - 1)
     } (computeNext c u)
   | otherwise = u
 
 
 applyMove :: Config -> U CellState -> U CellState
 applyMove c u =
-  if Data.Maybe.fromJust (move c) == 0
+  if fromJust (move c) == 0
     then u
-    else shift u (Data.Maybe.fromJust (move c))
+    else shift u (fromJust (move c))
 
 
 wolfram :: Config -> IO ()
